@@ -2,6 +2,8 @@
 
 ![alt tag](https://raw.github.com/valitovaza/scrollableTabbar/master/IDScrollableTabBar.png)
 
+[![Scrollable TabBar](http://img.youtube.com/vi/wBNHplkTSLQ/0.jpg)](http://www.youtube.com/watch?v=wBNHplkTSLQ)
+
 
 ===========================================================================
 DESCRIPTION:
