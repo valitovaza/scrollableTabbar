@@ -1,0 +1,19 @@
+### IDScrollableTabBar ###
+
+===========================================================================
+DESCRIPTION:
+
+Scrollable tab bar that highlights selected item like under magnifying glass. You can customize it as you wish!
+
+
+===========================================================================
+TAGS:
+
+scrollable tab bar, tab bar
+
+===========================================================================
+BUILD REQUIREMENTS:
+
+ARC, iOS 4.1+
+
+===========================================================================
