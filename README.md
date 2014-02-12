@@ -1,5 +1,8 @@
 ### IDScrollableTabBar ###
 
+![alt tag](https://raw.github.com/valitovaza/scrollableTabbar/master/IDScrollableTabBar.png)
+
+
 ===========================================================================
 DESCRIPTION:
 
