@@ -4,6 +4,8 @@
 
 [![Scrollable TabBar](https://raw.github.com/valitovaza/scrollableTabbar/master/video.png)](http://www.youtube.com/watch?v=wBNHplkTSLQ)
 
+<a href = 'http://blog.bananadev.pro'>http://blog.bananadev.pro</a>
+
 
 ===========================================================================
 DESCRIPTION:
