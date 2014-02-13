@@ -4,7 +4,7 @@
 
 [![Scrollable TabBar](https://raw.github.com/valitovaza/scrollableTabbar/master/video.png)](http://www.youtube.com/watch?v=wBNHplkTSLQ)
 
-<a href = 'http://blog.bananadev.pro/2013/08/10/scrollabletabbar/' target = '_blank'>check out - http://blog.bananadev.pro/2013/08/10/scrollabletabbar/</a>
+<a href = 'http://blog.bananadev.pro/2013/08/10/scrollabletabbar/' target = '_blank'>more information on the blog</a>
 
 
 ===========================================================================
