@@ -22,7 +22,9 @@
 -(void)setShadowImageLeft : (UIImage *)image;
 -(void)setItemsFont : (UIFont *) font textColor : (UIColor *)color;
 -(void)setSelectedItem:(int)selectedItem animated : (BOOL) animated;
+-(void)setItemsBackgroundColor : (UIColor *)backgroundColor alpha : (float)alpha;
 
+-(void)setItems:(IDItem *)item, ...;
 -(NSArray *)getItems;
 -(IDScrollableTabBarItem *)itemAtIndex : (int) index;
 @end
