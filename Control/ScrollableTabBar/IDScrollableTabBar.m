@@ -35,6 +35,7 @@
     float _ledge;
     
     BOOL _frameAnimation;
+	BOOL _initialized;
 }
 @property (nonatomic, readwrite) int selectedItem;
 @property (nonatomic, strong) UIImageView *shadowImageViewRight;
@@ -87,6 +88,12 @@
     for (IDScrollableTabBarItem *item in _buttonsArray) {
         [item.label setFont:font];
         [item.label setTextColor:color];
+    }
+}
+-(void)setItemsBackgroundColor:(UIColor *)backgroundColor alpha:(float)alpha{
+    for (IDScrollableTabBarItem *item in _buttonsArray) {
+        item.backgroundColor = backgroundColor;
+        item.alpha = alpha;
     }
 }
 -(NSArray *)getItems{
@@ -269,83 +276,112 @@
     });
 }
 - (id)initWithFrame:(CGRect)frame itemWidth : (float) itemWidth items : (IDItem *)item, ...{
-    
-    UIImage *defaultBackGroundImage = [UIImage imageNamed:@"defaultBackground"];
-    UIImage *defaultArchImage = [UIImage imageNamed:@"defaultArch"];
-    frame.size.height = defaultArchImage.size.height;
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-        NSMutableArray *arrayItems = [[NSMutableArray alloc] init];
-        va_list args;
-        va_start(args,item);
-        for (IDItem *arg = item; arg != nil; arg = va_arg(args, IDItem*))
-        {
-            [arrayItems addObject:arg];
-        }
-        va_end(args);
-        _itemWidth = itemWidth;
-        _ledge = defaultArchImage.size.height - defaultBackGroundImage.size.height;
-        if (_ledge >= frame.size.height) {
-            _ledge = 0.f;
-        }
-        _itemHeight = frame.size.height - _ledge;
-        //defaults
-        self.backgroundColor = [UIColor clearColor];
-        _backImageView = [[UIImageView alloc] initWithImage:defaultBackGroundImage];
-        CGRect rect = _backImageView.frame;
-        rect.origin.y = self.frame.size.height - rect.size.height;
-        [_backImageView setFrame:rect];
-        _backImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
-        [self addSubview:_backImageView];
-        self.clipsToBounds = YES;
-        //center
-        _centerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"defaultCenter"]];
-        rect = _centerImageView.frame;
-        rect.origin.x = self.frame.size.width / 2.f - rect.size.width / 2.f;
-        [_centerImageView setFrame:rect];
-        _centerImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-        [self addSubview:_centerImageView];
-        //arch
-        _archImageView = [[UIImageView alloc] initWithImage:defaultArchImage];
-        rect = _archImageView.frame;
-        rect.origin.x = frame.size.width / 2.f - rect.size.width / 2.f;
-        [_archImageView setFrame:rect];
-        _archImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-        [self addSubview:_archImageView];
-        //shadowImages
-        UIImageView *imgViewLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"defaultShadowLeft"]];
-        imgViewLeft.userInteractionEnabled = NO;
-        rect = imgViewLeft.frame;
-        rect.origin.y = self.frame.size.height - rect.size.height;
-        [imgViewLeft setFrame:rect];
-        imgViewLeft.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
-        [self addSubview:imgViewLeft];
-        self.shadowImageViewLeft = imgViewLeft;
-        UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"defaultShadowRight"]];
-        imgView.userInteractionEnabled = NO;
-        rect = imgView.frame;
-        rect.origin.x = self.frame.size.width - rect.size.width;
-        rect.origin.y = self.frame.size.height - rect.size.height;
-        [imgView setFrame:rect];
-        imgView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
-        [self addSubview:imgView];
-        self.shadowImageViewRight = imgView;
-        //by default - middle item
-        _selectedItem = [arrayItems count] / 2.f - 0.5f;
-        [self createButtons:arrayItems];
-        [self createTouchAbleViews];
-        _isTapSelectionNeed = YES;
-    }
-    return self;
+	self = [super initWithFrame:frame];
+	if (self) {
+		_itemWidth = itemWidth;
+		self.frame = frame;
+        
+		// Initialization code
+		[self initialize];
+		[self setItems:item];
+	}
+	return self;
 }
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (id)initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	if (self) {
+		[self initialize];
+	}
+	return self;
+}
+
+- (id)init {
+	if (self = [super init]) {
+		[self initialize];
+	}
+    
+	return self;
+}
+- (void)setItems:(IDItem *)item, ...{
+	[self initialize];
+	NSMutableArray *arrayItems = [[NSMutableArray alloc] init];
+	va_list args;
+	va_start(args, item);
+	for (IDItem *arg = item; arg != nil; arg = va_arg(args, IDItem *)) {
+		[arrayItems addObject:arg];
+	}
+	va_end(args);
+    
+	_selectedItem = [arrayItems count] / 2.f - 0.5f;
+	[self createButtons:arrayItems];
+	[self createTouchAbleViews];
+	_isTapSelectionNeed = YES;
+}
+- (void)initialize {
+	if (_initialized) {
+		return;
+	}
+    
+	_initialized = YES;
+	if (_itemWidth == 0) {
+		_itemWidth = 80; // default width
+	}
+    
+	CGRect frame = self.frame;
+	UIImage *defaultBackGroundImage = [UIImage imageNamed:@"defaultBackground"];
+	UIImage *defaultArchImage = [UIImage imageNamed:@"defaultArch"];
+	frame.size.height = defaultArchImage.size.height;
+    
+	_ledge = defaultArchImage.size.height - defaultBackGroundImage.size.height;
+	if (_ledge >= frame.size.height) {
+		_ledge = 0.f;
+	}
+	_itemHeight = frame.size.height - _ledge;
+    
+	//defaults
+	self.backgroundColor = [UIColor clearColor];
+	_backImageView = [[UIImageView alloc] initWithImage:defaultBackGroundImage];
+	CGRect rect = _backImageView.frame;
+	rect.origin.y = self.frame.size.height - rect.size.height;
+	[_backImageView setFrame:rect];
+	_backImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
+	[self addSubview:_backImageView];
+	self.clipsToBounds = YES;
+    
+	//center
+	_centerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"defaultCenter"]];
+	rect = _centerImageView.frame;
+	rect.origin.x = self.frame.size.width / 2.f - rect.size.width / 2.f;
+	[_centerImageView setFrame:rect];
+	_centerImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+	[self addSubview:_centerImageView];
+    
+	//arch
+	_archImageView = [[UIImageView alloc] initWithImage:defaultArchImage];
+	rect = _archImageView.frame;
+	rect.origin.x = frame.size.width / 2.f - rect.size.width / 2.f;
+	[_archImageView setFrame:rect];
+	_archImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+	[self addSubview:_archImageView];
+    
+	//shadowImages
+	UIImageView *imgViewLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"defaultShadowLeft"]];
+	imgViewLeft.userInteractionEnabled = NO;
+	rect = imgViewLeft.frame;
+	rect.origin.y = self.frame.size.height - rect.size.height;
+	[imgViewLeft setFrame:rect];
+	imgViewLeft.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
+	[self addSubview:imgViewLeft];
+	self.shadowImageViewLeft = imgViewLeft;
+	UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"defaultShadowRight"]];
+	imgView.userInteractionEnabled = NO;
+	rect = imgView.frame;
+	rect.origin.x = self.frame.size.width - rect.size.width;
+	rect.origin.y = self.frame.size.height - rect.size.height;
+	[imgView setFrame:rect];
+	imgView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
+	[self addSubview:imgView];
+	self.shadowImageViewRight = imgView;
 }
 -(void)createButtons : (NSArray *)arrayItems{
     //buttons

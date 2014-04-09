@@ -20,7 +20,7 @@
 @end
 @interface IDItem : NSObject
 @property (nonatomic, retain) UIImage *image;
-@property (nonatomic, retain) NSString *text; 
+@property (nonatomic, retain) NSString *text;
 - (id)initWithImage : (UIImage *)image text : (NSString*)text;
 
 @end
